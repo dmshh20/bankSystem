@@ -1,10 +1,11 @@
 import React from 'react'
+import Header from './Header/Header'
 
 const App = () => {
   return (
-    <div>
-      YA YAYAYA 123213
-    </div>
+    <>
+      <Header></Header>
+    </>
   )
 }
 
