@@ -1,0 +1,166 @@
+.totalFinance {
+    width: 389px;
+    height: 152px;
+    border-radius: 20px;
+    background-color: #52449B;
+    cursor: pointer;
+}
+
+.totalExpense {
+    width: 389px;
+    height: 152px;
+    border-radius: 20px;
+    background: linear-gradient(279.13deg, #F362EE -9.54%, #8B28BA 151.3%);
+    cursor: pointer;
+
+}
+.homePage {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 100px;
+}
+.totalFinaceStr {
+    font-size: 14px;
+    width: 98;
+    height: 23;
+    opacity: 1;
+    margin-top: 42px;
+    margin-left: 84px;
+    color: #FFFEFE;
+    font-family: Poppins;
+    font-weight: 600;
+    font-style: SemiBold;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 0%;
+}
+.totalFinaceCount {
+    width: 98;
+    height: 44;
+    opacity: 1;
+    font-family: Poppins;
+    font-weight: 600;
+    font-size: 27px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-left: 84px;
+    margin-top: 7px;
+    color: #FFFEFE;   
+}
+.totalExpenseStr {
+    margin-top: 42px;
+    margin-left: 86px;
+    font-family: Poppins;
+    font-weight: 600;
+    font-style: SemiBold;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    width: 98;
+    height: 23;
+    opacity: 1;
+    color: #FFFEFE;   
+}
+
+
+.tapSearch {
+    width: 577px;
+    height: 72px;
+    gap: 10px;
+    opacity: 1;
+    border-radius: 20px;
+    padding-top: 25px;
+    padding-right: 30px;
+    padding-bottom: 25px;
+    padding-left: 30px;
+    background: #272D35;
+    display: flex;
+    align-items: center;
+}
+
+.searchLine {
+    margin-left: 10px;
+    color: white;
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.searchImages {
+    cursor: pointer;
+}
+
+.finance {
+    display: flex;
+    gap: 30px;
+}
+.lastOperations {
+    width: 810px;
+    height: 200px;
+    border-radius: 20px;
+    background: #272D35;
+    color: white;
+    font-family: Poppins;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.lastOperationsMessage {
+    margin-top: 20px;
+    margin-left: 20px;
+    font-size: 20px;
+}
+
+.SearchMessageNotification {
+    display: flex;
+}
+
+.message {
+    width: 92px;
+    height: 72px;
+    gap: 10px;
+    opacity: 1;
+    border-radius: 20px;
+    padding-top: 20px;
+    padding-right: 26px;
+    padding-bottom: 20px;
+    padding-left: 26px;
+    background: #272D35;
+    margin-left: 20px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+.notification {
+    width: 92px;
+    height: 72px;
+    gap: 10px;
+    opacity: 1;
+    border-radius: 20px;
+    padding-top: 20px;
+    padding-right: 26px;
+    padding-bottom: 20px;
+    padding-left: 26px;
+    background: #272D35;
+    margin-left: 20px;
+    display: flex;  
+    justify-content: center;
+    cursor: pointer;
+}
+
+.stroke3 {
+    position: relative;
+}
+
+.stroke1 {
+    position: absolute;
+    margin-top: 10px;
+}
