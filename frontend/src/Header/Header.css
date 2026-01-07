@@ -1,0 +1,44 @@
+.header {
+    background: #272D35;
+    width: 207px;
+    height: 603px;
+    margin-top: 60px;
+    margin-left: 250px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px; 
+}
+
+.ul-list {
+    list-style: none;
+    color: white;
+}
+.firstLiIcon {
+    margin-top: 40px;
+}
+
+.liAndIcon {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    margin-left: 30px;
+    gap: 10px;
+    margin-bottom: 32px;
+    
+}
+.liAndIcon img {
+    /* width: 15px; */
+    /* height: 15px; */
+    cursor: pointer;
+}
+
+.ul-list li {
+    cursor: pointer;
+
+}
+
+.hrLine {
+    margin-bottom: 69px;
+}
+
