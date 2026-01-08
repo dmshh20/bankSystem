@@ -1,0 +1,29 @@
+.backgroundDisplay {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #a4bae0;
+    background: linear-gradient(90deg, rgba(164, 186, 224, 0.43) 100%, rgba(57, 190, 179, 1) 30%, rgba(87, 199, 133, 1) 50%, rgba(144, 207, 114, 1) 69%, rgba(237, 221, 83, 1) 100%);
+}
+
+.insideModal {
+    width: 600px;
+    height: 400px;
+    border-radius: 20px;
+    background-color: #272D35;
+    position: relative;
+
+}
+.fa-xmark {
+    color: white;
+    position: absolute;
+    cursor: pointer;
+    left: 565px;
+    top: 20px;
+    font-size: 20px;
+}
