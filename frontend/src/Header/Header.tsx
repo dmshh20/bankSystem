@@ -7,14 +7,18 @@ import Payment from '../images/Group 97.png'
 import Profile from '../images/Profile.png'
 import Calendar from '../images/Calendar.png'
 import Document from '../images/Document.png'
+import DashBoard from '../Dashboard/DashBoard'
+import { useState } from 'react'
 
 const Header = () => {
+    const [isDashBoard, setIsDashBoard] = useState<boolean>(false)
+
   return (<>
    <header className='header'>
     <ul className='ul-list'>
         <div className='liAndIcon firstLiIcon'>    
-            <img src={Home} alt="" />
-            <li>Dashboard</li>
+            <img onClick={() => setIsDashBoard(true)} src={Home} alt="" />
+            <li onClick={() => setIsDashBoard(true)}>Dashboard</li>
         </div>
         <div className='liAndIcon'>    
             <img src={Document} alt="" />
@@ -48,6 +52,29 @@ const Header = () => {
         </div>
 
     </ul>
+
+
+    <DashBoard open={isDashBoard} isClose={() => setIsDashBoard(!isDashBoard)}>
+        <div className='dashBoardOptions'>
+            
+            <div className='transfer-option'>
+                <p>Exchange currency</p>
+            </div> 
+
+            <div className='transfer-option'>
+                <p>Transfers</p>
+            </div> 
+
+            <div className='transfer-option'>
+                <p>Utilities, telephony, internet and TV</p>
+            </div> 
+
+            <div className='transfer-option'>
+                <p>Other</p>
+            </div> 
+
+        </div>
+    </DashBoard>
 
    </header>
   </>
