@@ -7,8 +7,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #a4bae0;
-    background: linear-gradient(90deg, rgba(164, 186, 224, 0.43) 100%, rgba(57, 190, 179, 1) 30%, rgba(87, 199, 133, 1) 50%, rgba(144, 207, 114, 1) 69%, rgba(237, 221, 83, 1) 100%);
+    background-color: rgba(235, 242, 250, 0.4); 
 }
 
 .insideModal {
@@ -17,7 +16,7 @@
     border-radius: 20px;
     background-color: #272D35;
     position: relative;
-
+    
 }
 .fa-xmark {
     color: white;
@@ -26,4 +25,5 @@
     left: 565px;
     top: 20px;
     font-size: 20px;
+
 }

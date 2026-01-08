@@ -9,9 +9,13 @@ import Calendar from '../images/Calendar.png'
 import Document from '../images/Document.png'
 import DashBoard from '../Dashboard/DashBoard'
 import { useState } from 'react'
+import ExchangeCurrency from '../ExchangeCurrency/ExchangeCurrency'
+import Transfer from '../Transfer/Transfer'
 
 const Header = () => {
     const [isDashBoard, setIsDashBoard] = useState<boolean>(false)
+    const [isExchangeCurrency, setIsExchangeCurrency] = useState<boolean>(false);
+    const [isTransfer, setIsTransfer] = useState<boolean>(false);
 
   return (<>
    <header className='header'>
@@ -57,11 +61,11 @@ const Header = () => {
     <DashBoard open={isDashBoard} isClose={() => setIsDashBoard(!isDashBoard)}>
         <div className='dashBoardOptions'>
             
-            <div className='transfer-option'>
+            <div className='transfer-option' onClick={() => setIsExchangeCurrency(true)}>
                 <p>Exchange currency</p>
             </div> 
 
-            <div className='transfer-option'>
+            <div className='transfer-option' onClick={() => setIsTransfer(true)}>
                 <p>Transfers</p>
             </div> 
 
@@ -76,6 +80,16 @@ const Header = () => {
         </div>
     </DashBoard>
 
+    <ExchangeCurrency open={isExchangeCurrency} isClose={() => setIsExchangeCurrency(false)}>
+        <div className=''>
+            <h1>DashBoard Exchange</h1>
+        </div>
+    </ExchangeCurrency>
+
+    <Transfer open={isTransfer} isClose={() => setIsTransfer(false)}>
+        <h1>DashBoard Transfer</h1>
+    </Transfer>
+  
    </header>
   </>
   )

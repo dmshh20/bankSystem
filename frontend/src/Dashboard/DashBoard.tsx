@@ -12,9 +12,8 @@ const DashBoard = ({children, open, isClose}: DashBoardType) => {
 
   return (
     <div className="backgroundDisplay" onClick={isClose}>
-      <div onClick={(e) => e.stopPropagation()} className="insideModal">
-            <i className="fa-solid fa-xmark" onClick={isClose}></i>
-
+      <div onClick={(e) => {e.stopPropagation()}} className="insideModal">
+            <i className="fa-solid fa-xmark" onClick={(e) => {e.stopPropagation(); isClose()}}></i>
         {children}
       </div>
     </div>

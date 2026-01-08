@@ -1,19 +1,19 @@
 import type { ReactNode } from "react"
 import DashBoard from "../Dashboard/DashBoard"
 
-
-interface ExchangeCurrencyType {
+interface TranferType {
     open: boolean
     isClose: () => void
     children: ReactNode
 }
 
-const ExchangeCurrency = ({open, isClose, children}: ExchangeCurrencyType) => {
+const Transfer = ({open, isClose, children}: TranferType) => {
   return (
     <DashBoard open={open} isClose={isClose}>
         {children}
     </DashBoard>
-  )
+
+    )
 }
 
-export default ExchangeCurrency
+export default Transfer
