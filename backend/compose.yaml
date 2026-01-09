@@ -1,0 +1,13 @@
+
+name: banksystem
+
+services:
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 9999
+      POSTGRES_DB: bank
+    ports:
+      - 5434:5432
