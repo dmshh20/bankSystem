@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
    "scripts": {
+    "db:start": "cd backend && docker compose up",
     "start:dev": "cd backend && nest start --watch",
     "dev": "cd frontend && npm run dev",
-    "start": "concurrently  \" npm run start:dev\" \"npm run dev\" ",
+    "start": "concurrently \"npm run db:start\" \" npm run start:dev\" \"npm run dev\"  ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Artem Dmysh",
