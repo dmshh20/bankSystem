@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from './dto/SignIn.dto';
 import { EncryptService } from 'src/encrypt/encrypt.service';
+import { sendEmail } from './mailer/resend';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,7 @@ export class AuthService {
             }
 
             const cardNumber = await this.encryptService.generateCardNumber()
-            const cardHash = await this.encryptService.searchBlindIndex(cardNumber)
+            const cardHash = await this.encryptService.createBlindIndex(cardNumber)
 
             if (!cardNumber || !cardHash) {
                 throw new InternalServerErrorException('Failed in getting cardNumber or cardHash')
@@ -44,7 +45,7 @@ export class AuthService {
                     cardEncrypted: encryptedKeyAndCard,
                     cardHash,
                     password: hash,
-                    otpCode: '0000'
+                    otpCode: ''
                 }
             })
             
@@ -59,7 +60,7 @@ export class AuthService {
 
     async signIn(body: SignInDto) {
         try {
-            const cardShaHash = await this.encryptService.searchBlindIndex(body.card)
+            const cardShaHash = await this.encryptService.createBlindIndex(body.card)
 
             const findUser = await this.prisma.user.findUnique({
                 where: {
@@ -77,12 +78,24 @@ export class AuthService {
                 throw new BadRequestException('passwords dont match')
             }
         
-            const payload = {id: findUser.id}
-            const accessToken = this.jwt.sign(payload)
+            const generateOtpCode = await this.encryptService.otpGenerate()
+            const hashOtpCode = await this.encryptService.hashOtp(String(generateOtpCode))
+            
+            const updateUserOtpCpde = await this.prisma.user.update({
+                where: {
+                    id: findUser.id
+                }, data: {
+                    otpCode: hashOtpCode
+                }
+            })
+            await sendEmail(String(generateOtpCode))
+            // const payload = {id: findUser.id}
+            // const accessToken = this.jwt.sign(payload)
 
-            return {
-                access_token: accessToken
-            }
+            // return {
+            //     access_token: accessToken,
+            //     otpCode: updateUserOtpCpde
+            // }
         } catch(error) {
             throw new InternalServerErrorException('Error in signIn')
         }

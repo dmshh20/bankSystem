@@ -79,14 +79,24 @@ export class EncryptService {
     }
 
 
-    async searchBlindIndex(cardNumber: string) {
+    async createBlindIndex(cardNumber: string) {
         try {
-            return createHash('sha256').update(cardNumber + 'pepper').digest('hex')
+            return createHash('sha256').update(cardNumber + process.env.PEPPER).digest('hex')
         } catch(error) {
-            console.log('error in blind index', error);
-            
+            throw new InternalServerErrorException('Error in finding BlindIndex')   
         }
     }
     
+    async otpGenerate() {
+        return randomInt(100000, 999999).toString()
+    }
+
+    async hashOtp(code: string) {
+        try {
+            return createHash('sha256').update(code + process.env.PEPPER).digest('hex')
+        } catch(error) {
+            throw new InternalServerErrorException('Error in finding BlindIndex')   
+        }
+    }
 
 }
