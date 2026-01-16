@@ -17,5 +17,9 @@ export class AuthController {
     return this.authService.signIn(body)
   }
   
+  @Post('verify')
+  async verifyViaOtp(@Body() body: any) {
+    return this.authService.verifyViaOtp(body)
+  }
 
 }

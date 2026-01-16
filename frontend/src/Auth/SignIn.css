@@ -1,0 +1,140 @@
+.signin-page {
+  flex: 1;                  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} 
+
+.signin-wrapper {
+  width: 100%;
+  max-width: 380px;
+  padding: 32px;
+  border-radius: 12px;
+  
+}
+
+
+.signin-form {
+  width: 100%;
+  max-width: 380px;
+  /* background: #fff; */
+  background: #272D35;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.signin-title {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #dfd8d8;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.input-group label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #eeeded;
+}
+
+.input-group input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #667eea;
+}
+
+.signin-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  background: #667eea;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.signin-btn:hover {
+  background: #667eea;
+}
+
+
+.otp-page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.otp-form {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  background: #272D35;
+
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.otp-title {
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.otp-subtitle {
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.otp-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.otp-input {
+  width: 48px;
+  height: 56px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 20px;
+  text-align: center;
+  outline: none;
+}
+
+.otp-input:focus {
+  border-color: #0dbd3f;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.otp-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #667eea;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.otp-btn:hover {
+  background: #5a67d8;
+}

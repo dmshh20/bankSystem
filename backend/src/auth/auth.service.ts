@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { SignInDto } from './dto/SignIn.dto';
 import { EncryptService } from 'src/encrypt/encrypt.service';
 import { sendEmail } from './mailer/resend';
+import { redis } from 'src/redis/redis';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,8 @@ export class AuthService {
 
             const cardNumber = await this.encryptService.generateCardNumber()
             const cardHash = await this.encryptService.createBlindIndex(cardNumber)
-
+            console.log(cardNumber)
+        
             if (!cardNumber || !cardHash) {
                 throw new InternalServerErrorException('Failed in getting cardNumber or cardHash')
             }
@@ -60,7 +62,7 @@ export class AuthService {
 
     async signIn(body: SignInDto) {
         try {
-            const cardShaHash = await this.encryptService.createBlindIndex(body.card)
+            const cardShaHash = await this.encryptService.createBlindIndex(body.cardNumber)
 
             const findUser = await this.prisma.user.findUnique({
                 where: {
@@ -72,6 +74,7 @@ export class AuthService {
             if (!findUser || findUser.cardHash !== cardShaHash) {
                 return {message: "Invalid email or card details"}   
             } 
+            
 
             const passwordCompare = await bcrypt.compare(body.password, findUser.password)
             if (!passwordCompare) {
@@ -79,25 +82,37 @@ export class AuthService {
             }
         
             const generateOtpCode = await this.encryptService.otpGenerate()
-            const hashOtpCode = await this.encryptService.hashOtp(String(generateOtpCode))
+            const hashOtpCode = await this.encryptService.hashOtp(generateOtpCode)
             
-            const updateUserOtpCpde = await this.prisma.user.update({
-                where: {
-                    id: findUser.id
-                }, data: {
-                    otpCode: hashOtpCode
-                }
-            })
+          
             await sendEmail(String(generateOtpCode))
-            // const payload = {id: findUser.id}
-            // const accessToken = this.jwt.sign(payload)
-
-            // return {
-            //     access_token: accessToken,
-            //     otpCode: updateUserOtpCpde
-            // }
+            await redis.set(`otp:${findUser.id}`, hashOtpCode, 'EX', 300)
+            return {
+                validate: true,
+                userId: findUser.id
+            }
         } catch(error) {
             throw new InternalServerErrorException('Error in signIn')
+        }
+    }
+
+    async verifyViaOtp(body: {userId: number, otp: string}) {
+        try {
+            const getActiveOtpCode = await redis.get(`otp:${body.userId}`)
+            const currentUserOtp = await this.encryptService.hashOtp(body.otp)
+            if (currentUserOtp !== getActiveOtpCode) {
+                throw new BadRequestException('Failed verify')
+            }
+
+            const payload = {id: body.userId}
+            const accessToken = this.jwt.sign(payload)
+
+            return {
+                access_token: accessToken,
+                auth: true
+            }
+        } catch(error) {
+            throw new Error('Failed verify otp')
         }
     }
 
