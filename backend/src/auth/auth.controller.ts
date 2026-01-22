@@ -22,4 +22,15 @@ export class AuthController {
     return this.authService.verifyViaOtp(body)
   }
 
+  @Post('forgetpassword-otp-verify')
+  async forgetPasswordOtpVerify(@Body() body: {email: string, otp: string}) {
+    return this.authService.forgetPasswordOtpVerify(body)
+  }
+
+  @Post('email-verify')
+  async emailVerify(@Body() body: {email: string}) {
+    return this.authService.emailVerify(body)
+  }
+
+
 }

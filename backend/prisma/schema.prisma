@@ -16,5 +16,4 @@ model User {
   cardEncrypted           String     @unique
   cardHash                String     @unique
   password                String
-  otpCode                 String
 }

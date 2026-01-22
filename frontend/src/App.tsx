@@ -1,8 +1,10 @@
 import { Route, BrowserRouter as Router, Routes, } from 'react-router-dom'
-import Header from './Header/Header'
 import Home from './Home/Home'
-import SignIn from './Auth/SignIn'
+import SignIn from './Auth/SignIn/SignIn'
 import MainLayout from './MainLayout'
+import SignUp from './Auth/SignUp/SignUp'
+import Logout from './Auth/Logout/Logout'
+import ResetPasswordOtpVerify from './Auth/OtpVerify/forgetPasswordOtpVerify'
 
 const App = () => {
   return (
@@ -16,6 +18,9 @@ const App = () => {
         </Route>
 
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/logout" element={<Logout/>} />
+        <Route path="/forgetpassword-otp-verify" element={<ResetPasswordOtpVerify/>} />
       </Routes> 
 
        </Router>

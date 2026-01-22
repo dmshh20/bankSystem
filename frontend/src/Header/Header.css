@@ -24,8 +24,16 @@
     margin-left: 30px;
     gap: 10px;
     margin-bottom: 32px;
+    flex-direction: none;
     
 }
+.liAndIconLink {
+    text-decoration: none;
+    display: flex;
+    gap: 10px;
+    color: white;
+}
+
 .liAndIcon img {
     cursor: pointer;
 }

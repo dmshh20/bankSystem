@@ -44,9 +44,9 @@ const Header = () => {
             <li>Settings</li>
         </div>
          <div className='liAndIcon'>    
-            <Link to='/signin'>
+            <Link to='/logout' className='liAndIconLink'>
             <img src={Logout} alt="" />
-                <li>Logout</li>
+                <li >Logout</li>
             </Link>
         </div>
 

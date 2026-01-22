@@ -17,7 +17,6 @@
 .signin-form {
   width: 100%;
   max-width: 380px;
-  /* background: #fff; */
   background: #272D35;
   padding: 32px;
   border-radius: 12px;
@@ -66,6 +65,7 @@
   font-size: 16px;
   cursor: pointer;
   transition: background 0.2s;
+  margin-bottom: 15px;
 }
 
 .signin-btn:hover {
@@ -137,4 +137,63 @@
 
 .otp-btn:hover {
   background: #5a67d8;
+}
+.haveAnAccount {
+    text-decoration: none;
+    /* margin-bottom: 20px; */
+   
+}
+
+.exitBtn {
+    display: flex;
+    justify-content: center;
+    color: brown;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.forgetPassoword {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  /* text-decoration: none; */
+  color: rgba(246, 172, 53, 0.94);
+}
+
+.askEmailEnter {
+  color: white;
+  font-weight: 1000;
+}
+.whereToSendForgetPassowrdOtp {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 auto;
+}
+.askEmailEnter {
+  margin-bottom: 20px;
+}
+.emailForOtp {
+  outline: none;
+  width: 200px;
+  margin: 0 auto;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 15px;
+}
+.sendOtpBtn {
+  margin: 0 auto;
+  padding: 6px;
+  width: 100px;
+  cursor: pointer;
+  border-radius: 12px;
+  outline: none;
+  border: none;
+  background-color: #667eea;
+}
+.sendOtpBtn:hover {
+  background: #5a67d8;
+
 }

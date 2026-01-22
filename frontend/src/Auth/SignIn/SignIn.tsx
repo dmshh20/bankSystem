@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import './SignIn.css';
 import axios from 'axios';
-import OtpVerify from './OtpVerify';
+import OtpVerify from '../OtpVerify/OtpVerify';
+import { Link } from 'react-router-dom';
 
 const SignIn = () => {
   const [userId, setUserId] = useState<number>()
@@ -25,20 +26,16 @@ const SignIn = () => {
 
   const validateEnteredData = async () => {
     try {
-      console.log('check',form);
       
       const response = await axios.post(import.meta.env.VITE_SIGNIN, form, {
-        headers: {
+        headers: {  
           "Content-Type": 'application/json'
         }
       })
       
-      console.log('RES', response.data);
       setUserId(response.data.userId)
       setValidation(response.data.validate)
     } catch(error) {
-      console.log("OOOO",error);
-      
       throw new Error('Failed in SignIn')
     }
   }
@@ -80,6 +77,18 @@ const SignIn = () => {
         <button type="submit" className="signin-btn" onClick={validateEnteredData}>
           Sign In
         </button>
+
+        <Link to="/signup" className='haveAnAccount'>
+          <b className='haveAnAccount'>Haven't had an account yet?</b>
+        </Link>
+
+        <Link to='/' className='exitBtn'>
+          <b className='exitBtn'>Exit</b>
+        </Link>
+
+        <Link to='/forgetpassword-otp-verify' className='forgetPassoword'>
+            <b className='forgetPassoword'>Forgot a password or cardNumber?</b>
+        </Link>
       </form>
     </div>}
     

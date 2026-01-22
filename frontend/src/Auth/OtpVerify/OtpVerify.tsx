@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import './SignIn.css'
+import '../SignIn/SignIn.css'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
@@ -28,7 +28,6 @@ const OtpVerify = ({userId}: any) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const otp = inputsRef.current.map(input => input.value).join('')
-    console.log('OTP entered:', otp)
     // Call your backend verification here
 
     const body = {
@@ -42,9 +41,9 @@ const OtpVerify = ({userId}: any) => {
     })
 
     
-
     const responsDataAuth = response.data.auth
     if (responsDataAuth === true) {
+      localStorage.setItem('accessToken', response.data.access_token)
       navigate('/')
     }
   }

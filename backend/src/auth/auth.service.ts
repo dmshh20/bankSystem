@@ -47,11 +47,16 @@ export class AuthService {
                     cardEncrypted: encryptedKeyAndCard,
                     cardHash,
                     password: hash,
-                    otpCode: ''
                 }
             })
             
-            return createUser
+            const payload = {id: createUser.id}
+            const accessToken = this.jwt.sign(payload)
+           
+            return {
+                access_token: accessToken,
+                user: createUser
+            }
         } catch(error) {
             if (error.code === 'P2002') {
                 throw new InternalServerErrorException('Failed during connect to db')
@@ -74,7 +79,6 @@ export class AuthService {
             if (!findUser || findUser.cardHash !== cardShaHash) {
                 return {message: "Invalid email or card details"}   
             } 
-            
 
             const passwordCompare = await bcrypt.compare(body.password, findUser.password)
             if (!passwordCompare) {
@@ -87,11 +91,12 @@ export class AuthService {
           
             await sendEmail(String(generateOtpCode))
             await redis.set(`otp:${findUser.id}`, hashOtpCode, 'EX', 300)
+            
             return {
                 validate: true,
                 userId: findUser.id
             }
-        } catch(error) {
+        } catch(error) {            
             throw new InternalServerErrorException('Error in signIn')
         }
     }
@@ -107,13 +112,60 @@ export class AuthService {
             const payload = {id: body.userId}
             const accessToken = this.jwt.sign(payload)
 
+            await redis.del(`otp:${body.userId}`) // if there will be an error here, its due to this code
             return {
                 access_token: accessToken,
                 auth: true
             }
         } catch(error) {
-            throw new Error('Failed verify otp')
+            throw new BadRequestException('Failed verify otp')
         }
+    }
+
+    async forgetPasswordOtpVerify(body: {email: string, otp: string}) {
+            const findUser = await this.prisma.user.findUnique({
+                where: {
+                    email: body.email
+                }
+            })
+
+            if (!findUser) {
+                throw new BadRequestException('User not found')
+            } 
+
+            const hashCurrentUserotp = await this.encryptService.hashOtp(body.otp)
+            const getUserOtp = await redis.get(`otpPass:${findUser?.id}`)
+
+            if (hashCurrentUserotp !== getUserOtp) {
+                throw new BadRequestException('Invalid otp')
+            } 
+
+            const payload = {id: findUser?.id}
+            const accessToken = this.jwt.sign(payload)
+           
+            await redis.del(`otpPass:${findUser?.id}`)
+            return {
+                access_token: accessToken
+            }
+    }
+
+    async emailVerify(body: {email: string}) {
+            const findUser = await this.prisma.user.findUnique({
+                where: {
+                    email: body.email
+                }
+            })
+       
+            const existingOtp = await redis.get(`otpPass:${findUser?.id}`)
+            if (existingOtp) {
+                return existingOtp
+            }
+
+            const generateOtpCode = await this.encryptService.otpGenerate()
+            const hashGeneratedOtp = await this.encryptService.hashOtp(generateOtpCode)
+            await sendEmail(String(generateOtpCode))       
+
+            await redis.set(`otpPass:${findUser?.id}`, hashGeneratedOtp, 'EX', 300)
     }
 
 }
