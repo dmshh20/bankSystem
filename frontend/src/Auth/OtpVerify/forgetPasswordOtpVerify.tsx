@@ -74,7 +74,7 @@ const ResetPasswordOtpVerify = () => {
       })
       setValidation(true)
 
-      const resetToken = response.data.resetToken
+      return response
     } catch(error: any) {
      setError(error.response?.data.message || "Failed OTP")
     }
