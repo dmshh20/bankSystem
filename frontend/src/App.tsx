@@ -5,6 +5,7 @@ import MainLayout from './MainLayout'
 import SignUp from './Auth/SignUp/SignUp'
 import Logout from './Auth/Logout/Logout'
 import ResetPasswordOtpVerify from './Auth/OtpVerify/forgetPasswordOtpVerify'
+import UpdatePassword from './Auth/UpdatePassword/UpdatePassword'
 
 const App = () => {
   return (
@@ -20,7 +21,8 @@ const App = () => {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/logout" element={<Logout/>} />
-        <Route path="/forgetpassword-otp-verify" element={<ResetPasswordOtpVerify/>} />
+        <Route path="/forgetpassword-email-verify" element={<ResetPasswordOtpVerify/>} />
+        <Route path="/update-password" element={<UpdatePassword></UpdatePassword>} />
       </Routes> 
 
        </Router>

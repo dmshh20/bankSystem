@@ -2,6 +2,10 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/SignUp.dto';
 import { SignInDto } from './dto/SignIn.dto';
+import { verifyViaOtpDto } from './dto/verifyViaOtp.dto';
+import { forgetPasswordEnterOtpDto } from './dto/forgetPasswordEnterOtp.dto';
+import { forgetPasswirdEmailVerifyDto } from './dto/forgetPasswirdEmailVerify.dto';
+import { updatePasswordDto } from './dto/updatePassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,19 +22,23 @@ export class AuthController {
   }
   
   @Post('verify')
-  async verifyViaOtp(@Body() body: any) {
+  async verifyViaOtp(@Body() body: verifyViaOtpDto) {
     return this.authService.verifyViaOtp(body)
   }
 
-  @Post('forgetpassword-otp-verify')
-  async forgetPasswordOtpVerify(@Body() body: {email: string, otp: string}) {
-    return this.authService.forgetPasswordOtpVerify(body)
+  @Post('forgetpassword-enter-otp')
+  async forgetPasswordEnterOtp(@Body() body: forgetPasswordEnterOtpDto) {
+    return this.authService.forgetPasswordEnterOtp(body)
   }
 
-  @Post('email-verify')
-  async emailVerify(@Body() body: {email: string}) {
-    return this.authService.emailVerify(body)
+  @Post('forgetpassword-email-verify')
+  async forgetPasswordEmailVerify(@Body() body: forgetPasswirdEmailVerifyDto) {
+    return this.authService.forgetPasswordEmailVerify(body)
   }
 
+  @Post('update-password')
+  async updatePassword(@Body() body: updatePasswordDto) {
+    return this.authService.updatePassword(body)
+  }
 
 }

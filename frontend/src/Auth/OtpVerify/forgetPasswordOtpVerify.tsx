@@ -6,7 +6,7 @@ import axios from 'axios'
 const ResetPasswordOtpVerify = () => {
   const [userEmail, setUserEmail] = useState<string>('')
   const [validation, setValidation] = useState<boolean>(false)
-  const [error, setError] = useState<string>()
+  const [error, setError] = useState<string | boolean>()
   const navigate = useNavigate()
   const inputsRef = useRef<HTMLInputElement[]>([])
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
@@ -37,35 +37,42 @@ const ResetPasswordOtpVerify = () => {
       otp: otp,
       email: userEmail
     }
-
-    
-    const response = await axios.post(import.meta.env.VITE_FORGET_PASSWORD, body, { 
+                                                                            
+    const response = await axios.post(import.meta.env.VITE_FORGET_PASSWORD_ENTER_OTP, body, { 
       headers: {
       'Content-Type': 'application/json'
     }})
 
-    if (response.data.access_token) {
-      localStorage.setItem('accessToken', response.data.access_token)
-      navigate('/')
+    if (response.data) {
+      navigate('/update-password', {
+        state: {email: userEmail}
+      })
     }
   }
 
   const handleOtpEmail = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
-      e.preventDefault()
+      if (!userEmail.trim()) {
+        setError(false)
+        setError('Enter your email')
+        return 
+      }
+      setError('')
+
       setValidation(true)
       setUserEmail(userEmail)
       const body = {
         email: userEmail
       }
 
-      const response = await axios.post(import.meta.env.VITE_EMAIL_VERIFY_BEFORE_FORGET_PASSWORD, body, {
+      const response = await axios.post(import.meta.env.VITE_FORGET_PASSWORD_EMAIL_VERIFY, body, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
 
-      return response.data
+      return response.data 
     } catch(error: any) {
      setError(error.response?.data.message || "Failed OTP")
     }
@@ -109,6 +116,7 @@ const ResetPasswordOtpVerify = () => {
           <input type="email" className='emailForOtp' value={userEmail} onChange={(e) => setUserEmail(e.target.value)} />
           <button className='sendOtpBtn'>Get OTP</button>
         </div>
+        {error ? error : ''}
       </form>
     </div>
   }

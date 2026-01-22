@@ -86,7 +86,7 @@ const SignIn = () => {
           <b className='exitBtn'>Exit</b>
         </Link>
 
-        <Link to='/forgetpassword-otp-verify' className='forgetPassoword'>
+        <Link to='/forgetpassword-email-verify' className='forgetPassoword'>
             <b className='forgetPassoword'>Forgot a password or cardNumber?</b>
         </Link>
       </form>

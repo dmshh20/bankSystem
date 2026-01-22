@@ -7,6 +7,10 @@ import { SignInDto } from './dto/SignIn.dto';
 import { EncryptService } from 'src/encrypt/encrypt.service';
 import { sendEmail } from './mailer/resend';
 import { redis } from 'src/redis/redis';
+import { verifyViaOtpDto } from './dto/verifyViaOtp.dto';
+import { forgetPasswordEnterOtpDto } from './dto/forgetPasswordEnterOtp.dto';
+import { forgetPasswirdEmailVerifyDto } from './dto/forgetPasswirdEmailVerify.dto';
+import { updatePasswordDto } from './dto/updatePassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -53,9 +57,11 @@ export class AuthService {
             const payload = {id: createUser.id}
             const accessToken = this.jwt.sign(payload)
            
+            const { password, ...UserWithoutPassword } = createUser 
+
             return {
                 access_token: accessToken,
-                user: createUser
+                user: UserWithoutPassword
             }
         } catch(error) {
             if (error.code === 'P2002') {
@@ -88,7 +94,6 @@ export class AuthService {
             const generateOtpCode = await this.encryptService.otpGenerate()
             const hashOtpCode = await this.encryptService.hashOtp(generateOtpCode)
             
-          
             await sendEmail(String(generateOtpCode))
             await redis.set(`otp:${findUser.id}`, hashOtpCode, 'EX', 300)
             
@@ -96,12 +101,13 @@ export class AuthService {
                 validate: true,
                 userId: findUser.id
             }
+
         } catch(error) {            
             throw new InternalServerErrorException('Error in signIn')
         }
     }
 
-    async verifyViaOtp(body: {userId: number, otp: string}) {
+    async verifyViaOtp(body: verifyViaOtpDto) {
         try {
             const getActiveOtpCode = await redis.get(`otp:${body.userId}`)
             const currentUserOtp = await this.encryptService.hashOtp(body.otp)
@@ -112,7 +118,6 @@ export class AuthService {
             const payload = {id: body.userId}
             const accessToken = this.jwt.sign(payload)
 
-            await redis.del(`otp:${body.userId}`) // if there will be an error here, its due to this code
             return {
                 access_token: accessToken,
                 auth: true
@@ -122,7 +127,7 @@ export class AuthService {
         }
     }
 
-    async forgetPasswordOtpVerify(body: {email: string, otp: string}) {
+    async forgetPasswordEnterOtp(body: forgetPasswordEnterOtpDto) {
             const findUser = await this.prisma.user.findUnique({
                 where: {
                     email: body.email
@@ -140,22 +145,22 @@ export class AuthService {
                 throw new BadRequestException('Invalid otp')
             } 
 
-            const payload = {id: findUser?.id}
-            const accessToken = this.jwt.sign(payload)
-           
             await redis.del(`otpPass:${findUser?.id}`)
-            return {
-                access_token: accessToken
-            }
+
+            return true            
     }
 
-    async emailVerify(body: {email: string}) {
+    async forgetPasswordEmailVerify(body: forgetPasswirdEmailVerifyDto) {
             const findUser = await this.prisma.user.findUnique({
                 where: {
                     email: body.email
                 }
             })
        
+            if (!findUser) {
+                throw new BadRequestException('User not found')
+            }
+
             const existingOtp = await redis.get(`otpPass:${findUser?.id}`)
             if (existingOtp) {
                 return existingOtp
@@ -166,6 +171,27 @@ export class AuthService {
             await sendEmail(String(generateOtpCode))       
 
             await redis.set(`otpPass:${findUser?.id}`, hashGeneratedOtp, 'EX', 300)
+
     }
 
+    async updatePassword(body: updatePasswordDto) {
+        const userNewPassword = body.password
+        const hashPassword = await bcrypt.hash(userNewPassword, 10)
+            
+        const updateUser = await this.prisma.user.update({
+            where: {
+                email: body.email,
+            },
+            data: {
+                password: hashPassword
+            },
+        })
+
+        const payload = {id: updateUser?.id}
+                const accessToken = this.jwt.sign(payload)
+            
+        return {
+                access_token: accessToken
+            }
+    }
 }
