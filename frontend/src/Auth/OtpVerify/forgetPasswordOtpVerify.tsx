@@ -42,8 +42,10 @@ const ResetPasswordOtpVerify = () => {
       headers: {
       'Content-Type': 'application/json'
     }})
-
+    
+    const resetToken = response.data.resetToken
     if (response.data) {
+      localStorage.setItem('resetToken', resetToken)
       navigate('/update-password', {
         state: {email: userEmail}
       })
@@ -60,7 +62,6 @@ const ResetPasswordOtpVerify = () => {
       }
       setError('')
 
-      setValidation(true)
       setUserEmail(userEmail)
       const body = {
         email: userEmail
@@ -71,8 +72,9 @@ const ResetPasswordOtpVerify = () => {
           'Content-Type': 'application/json'
         }
       })
+      setValidation(true)
 
-      return response.data 
+      const resetToken = response.data.resetToken
     } catch(error: any) {
      setError(error.response?.data.message || "Failed OTP")
     }

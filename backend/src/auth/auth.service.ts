@@ -65,7 +65,7 @@ export class AuthService {
             }
         } catch(error) {
             if (error.code === 'P2002') {
-                throw new InternalServerErrorException('Failed during connect to db')
+                throw new InternalServerErrorException('Email already in use')
             }            
             throw new BadRequestException('Failed during SignUp')
         }
@@ -147,7 +147,13 @@ export class AuthService {
 
             await redis.del(`otpPass:${findUser?.id}`)
 
-            return true            
+            // return true            
+             const payload = {id: findUser?.id}
+            const resetToken = this.jwt.sign(payload, {expiresIn: '15m'})
+
+            return {
+                resetToken
+            }
     }
 
     async forgetPasswordEmailVerify(body: forgetPasswirdEmailVerifyDto) {
@@ -172,6 +178,7 @@ export class AuthService {
 
             await redis.set(`otpPass:${findUser?.id}`, hashGeneratedOtp, 'EX', 300)
 
+           
     }
 
     async updatePassword(body: updatePasswordDto) {
@@ -188,7 +195,7 @@ export class AuthService {
         })
 
         const payload = {id: updateUser?.id}
-                const accessToken = this.jwt.sign(payload)
+        const accessToken = this.jwt.sign(payload)
             
         return {
                 access_token: accessToken

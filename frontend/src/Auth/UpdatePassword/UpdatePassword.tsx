@@ -14,6 +14,13 @@ const UpdatePassword = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+     const existingResetToken = localStorage.getItem('resetToken')
+
+      if (!existingResetToken) {
+          setError('resetToken is invalid')
+          return
+      }
+
     if (password !== confirmPassword) {
       setError('Passwords do not match')
       return
@@ -33,6 +40,7 @@ const UpdatePassword = () => {
     
     
     if (response.data) {
+      localStorage.removeItem('resetToken')
       localStorage.setItem('accessToken', response.data.access_token)
       navigate('/')
     }
