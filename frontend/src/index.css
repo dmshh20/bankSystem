@@ -10,5 +10,6 @@ body {
 
 .app {
   display: flex;
-  gap: 50px; /* відстань між Header і Home */
+  gap: 50px; 
+  min-height: 100vh;
 }

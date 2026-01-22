@@ -7,6 +7,7 @@ import Payment from '../images/Group 97.png'
 import Profile from '../images/Profile.png'
 import Calendar from '../images/Calendar.png'
 import Document from '../images/Document.png'
+import { Link } from 'react-router-dom'
 
 const Header = () => {
   return (<>
@@ -43,8 +44,10 @@ const Header = () => {
             <li>Settings</li>
         </div>
          <div className='liAndIcon'>    
+            <Link to='/logout' className='liAndIconLink'>
             <img src={Logout} alt="" />
-            <li>Logout</li>
+                <li >Logout</li>
+            </Link>
         </div>
 
     </ul>
