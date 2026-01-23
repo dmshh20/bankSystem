@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import DashBoard from "../Dashboard/DashBoard"
+import './Transfer.css'
 
 interface TranferType {
     open: boolean
@@ -14,6 +15,6 @@ const Transfer = ({open, isClose, children}: TranferType) => {
     </DashBoard>
 
     )
-}
+}   
 
 export default Transfer
