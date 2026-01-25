@@ -2,6 +2,9 @@ import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { transferFundsDto } from './dto/transferFunds.dto';
 import { EncryptService } from 'src/encrypt/encrypt.service';
+import { GetUserDto } from 'src/auth/getUser/dto/getUser.dto';
+import { transferDto } from './dto/recipient.dto';
+import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class TransferService {
@@ -17,9 +20,9 @@ export class TransferService {
         const funds = Number(body.amount)
 
         const recipient = await this.findRecipient(userTransfer, user)
-
+        
          this.logger.log('Making transfer...')
-        return await this.prisma.$transaction(async (t) => {
+        return await this.prisma.$transaction(async (t: Prisma.TransactionClient) => {
            await this.userBalanceValidate(t, recipient, funds)
             await this.transferLogic(t, user, funds, recipient)
             this.logger.log('Transfer completed successfully')
@@ -27,26 +30,26 @@ export class TransferService {
         
     }
 
-    private async findRecipient(recipientCard: string, user: any) {
+    private async findRecipient(recipientCard: string, user: GetUserDto) {
         const hashUserTransfer = await this.encryptService.createBlindIndex(recipientCard)
 
-        const findSender = await this.prisma.user.findUnique({
+        const sender = await this.prisma.user.findUnique({
             where: {id: user.id}
         })
         
-         const findUserTransfer = await this.prisma.user.findUnique({
+         const recipient = await this.prisma.user.findUnique({
             where: { cardHash: hashUserTransfer}})
 
-        if (!findUserTransfer || !findSender) throw new BadRequestException('User not found')
-        if (findUserTransfer.id === user.id) throw new BadRequestException('Self-transfer forbidden');
+        if (!recipient || !sender) throw new BadRequestException('User not found')
+        if (recipient.id === user.id) throw new BadRequestException('Self-transfer forbidden');
 
-        return {findSender, findUserTransfer}
+        return {sender, recipient}
     }
 
-    private async userBalanceValidate(t: any, recipient: any, amount: number) {
+    private async userBalanceValidate(t: Prisma.TransactionClient, recipient: transferDto, amount: number) {
 
          const userSenderBalance = await t.bankAccount.findUnique({
-                    where: {userId: recipient.findSender.id}
+                    where: {userId: recipient.sender.id}
             })
             if (!userSenderBalance) {
                 throw new BadRequestException('Balance not found')
@@ -57,7 +60,7 @@ export class TransferService {
             }
     }
 
-    private async transferLogic(t: any, user: any, amount: number, recipient: any) {
+    private async transferLogic(t: Prisma.TransactionClient, user: GetUserDto, amount: number, recipient: transferDto) {
         const withdrawFromSender = await t.bankAccount.update({
                 where: {
                     userId: user.id
@@ -70,7 +73,7 @@ export class TransferService {
     
             const incrementUserBalance =  await t.bankAccount.update({
                 where: {
-                    userId: recipient.findUserTransfer.id
+                    userId: recipient.recipient.id
                 },
                  data: {
                     balance: {

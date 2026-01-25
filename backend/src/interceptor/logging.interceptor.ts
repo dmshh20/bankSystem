@@ -33,9 +33,9 @@ export class LoggingInterceptor implements NestInterceptor {
         })
       );
     }
-    
+
     private async transactionsLogging(userId: number, statusCode: number, url: string, method: string, time: Date) {
-        return await this.prisma.transactionsHistory.create({
+        return await this.prisma.loggingHistory.create({
           data: {
             userId: userId,
             method: method,

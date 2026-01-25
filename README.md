@@ -21,3 +21,13 @@ Atomic State: Leveraged localStorage and location.state to securely pass tempora
 
 5. Redis Integration
 Volatile Caching: Used Redis for OTP storage with a 5-minute TTL (Time-To-Live) to reduce the system's Attack Surface.
+
+6. 🛡️ Secure Financial Transfer System
+Implemented a robust fund transfer service using Prisma Transactions to ensure data integrity and atomicity.
+Encapsulated Business Logic: Leveraged Object-Oriented Encapsulation by utilizing private helper methods for recipient resolution, balance validation, and transfer execution. This prevents the "Front Door" from being bypassed, ensuring all security checks are mandatory.
+Database Isolation: Configured transaction logic to prevent race conditions (concurrency bugs), ensuring that financial state remains consistent even under high load.
+
+7. 📝 Global Audit Logging & Observability
+Developed a custom NestJS Interceptor to track system activity and maintain a persistent audit trail.
+Reactive Logging with RxJS: Optimized the interceptor using the concatMap operator. This ensures that asynchronous database logging is handled synchronously within the request lifecycle, guaranteeing that an audit record is successfully written before the response is sent to the client.
+Performance vs. Persistence: Balanced system throughput with data reliability by ensuring critical HTTP metadata (status codes, methods, and user IDs) are captured and stored for every request.
