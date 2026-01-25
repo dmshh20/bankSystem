@@ -17,6 +17,7 @@ model User {
   cardHash                String     @unique
   password                String
   bankAccount             BankAccount[]
+  transactionsHistory      TransactionsHistory[]
 }
 
 model BankAccount {
@@ -24,4 +25,14 @@ model BankAccount {
   balance         Int   
   userId          Int       @unique
   bankAccountId   User      @relation(fields: [userId], references: [id])
+}
+
+model TransactionsHistory {
+  id                Int        @id @default(autoincrement())
+  userId            Int        
+  method            String
+  urlPath           String
+  statusCode        String
+  time              DateTime
+  userIdRelations   User      @relation(fields: [userId], references: [id])
 }

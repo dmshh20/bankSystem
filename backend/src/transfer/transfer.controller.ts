@@ -1,9 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { TransferService } from './transfer.service';
 import { transferFundsDto } from './dto/transferFunds.dto';
 import { GetUser } from 'src/auth/getUser/getUser';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { LoggingInterceptor } from 'src/interceptor/logging.interceptor';
 
+@UseInterceptors(LoggingInterceptor)
 @UseGuards(JwtAuthGuard)
 @Controller('transfer')
 export class TransferController {
