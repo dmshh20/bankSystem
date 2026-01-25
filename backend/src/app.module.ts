@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { EncryptModule } from './encrypt/encrypt.module';
+import { TransferModule } from './transfer/transfer.module';
 
 @Module({
   imports: [AuthModule,
@@ -12,7 +13,8 @@ import { EncryptModule } from './encrypt/encrypt.module';
      ConfigModule.forRoot({
       isGlobal: true
      }),
-     EncryptModule
+     EncryptModule,
+     TransferModule
     ],
   controllers: [AppController],
   providers: [AppService],

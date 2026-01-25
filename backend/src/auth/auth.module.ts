@@ -10,7 +10,7 @@ import { EncryptService } from 'src/encrypt/encrypt.service';
      JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '2h' },
+      signOptions: { expiresIn: '3h' },
     }),
   ],
   controllers: [AuthController],

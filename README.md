@@ -15,7 +15,7 @@ Error Translation: Specifically mapped database constraints (e.g., Prisma P2002)
 Blind Indexing: Card numbers are hashed for fast, secure database lookups without exposing raw data.
 Salted Hashing: Utilized bcrypt for passwords and hashed OTPs before storing them in Redis.
 
-Frontend Integrity (React)
+4. Frontend Integrity (React)
 Race Condition Mitigation: Synchronized UI transitions with server responses, ensuring the user only proceeds after the API "Green Light."
 Atomic State: Leveraged localStorage and location.state to securely pass temporary tokens between flow steps.
 

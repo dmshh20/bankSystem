@@ -16,4 +16,12 @@ model User {
   cardEncrypted           String     @unique
   cardHash                String     @unique
   password                String
+  bankAccount             BankAccount[]
+}
+
+model BankAccount {
+  id              Int        @id @default(autoincrement())
+  balance         Int   
+  userId          Int       @unique
+  bankAccountId   User      @relation(fields: [userId], references: [id])
 }

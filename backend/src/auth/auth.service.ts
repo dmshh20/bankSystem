@@ -39,7 +39,7 @@ export class AuthService {
             if (!cardNumber || !cardHash) {
                 throw new InternalServerErrorException('Failed in getting cardNumber or cardHash')
             }
-            
+
             const hash = await bcrypt.hash(body.password, 10)
             const encryptedKeyAndCard = await this.encryptService.encryptionCardNumber(cardNumber)
 
@@ -53,6 +53,14 @@ export class AuthService {
                     password: hash,
                 }
             })
+
+            const createBankAccount = await this.prisma.bankAccount.create({
+                data: {
+                    balance: 0,
+                    userId: createUser.id
+                }
+            })
+            const {balance, ...userBankAccount} = createBankAccount 
             
             const payload = {id: createUser.id}
             const accessToken = this.jwt.sign(payload)
@@ -61,7 +69,8 @@ export class AuthService {
 
             return {
                 access_token: accessToken,
-                user: UserWithoutPassword
+                user: UserWithoutPassword,
+                userBankAccount
             }
         } catch(error) {
             if (error.code === 'P2002') {
@@ -95,6 +104,8 @@ export class AuthService {
             const hashOtpCode = await this.encryptService.hashOtp(generateOtpCode)
             
             await sendEmail(String(generateOtpCode))
+            console.log('sendd');
+            
             await redis.set(`otp:${findUser.id}`, hashOtpCode, 'EX', 300)
             
             return {
