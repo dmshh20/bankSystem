@@ -7,7 +7,9 @@ interface Transaction {
     id: number;
     amount: string; 
     senderId: number;
+    sender: any
     receiverId: number;
+    receiver: any
     currency: string
     time: string;
 }
@@ -90,9 +92,8 @@ const Home = () => {
     
     const dataTransaction = response.data.transactions
     setTransaction(dataTransaction)
-    console.log('2',transaction);
-    console.log('',dataTransaction);
     setCurrentUserId(response.data.userId)
+    console.log(response.data.transactions.sender);
     
   }
 
@@ -140,20 +141,21 @@ const Home = () => {
         <h1 className='lastOperationsMessage'>Recent transactions</h1>
       <div className='recentTransactionsList'>
           {transaction.slice(0, 4).map((th) => {
-            const isOutgoing = currentUserId !== th.receiverId;
-            return (
-              <div className='everyTransactionList' key={th.id}>
-                <div className='transactionInfo'>
-                    <span className='transactionType'>
-                      {isOutgoing ? 'To: ' + th.id : 'From: ' + th.senderId}
-                    </span>
-                    <p className={isOutgoing ? 'amount-red' : 'amount-green'}>
-                      {isOutgoing ? '-' : '+'}{th.amount} {th.currency}
-                    </p>
-                </div>
-              </div>
-            );
-          })}
+        const isOutgoing = currentUserId === th.senderId;
+        const { firstName, surname } = isOutgoing ? th.receiver : th.sender;
+
+        return (
+          <div key={th.id} className="everyTransactionList">
+            <span className='transcationList'>
+              {isOutgoing ? 'To' : 'From'}: {firstName} {surname}
+            </span>
+            <p className={isOutgoing ? 'amount-red' : 'amount-green'}>
+              {isOutgoing ? '-' : '+'}{th.amount} {th.currency}
+            </p>
+          </div>
+        );
+      })}
+
       </div>
 
       </div>

@@ -236,9 +236,11 @@ export class AuthService {
             ]
           }, orderBy: {
             id: 'desc'
+          }, include: {
+            sender: {select: {firstName: true, surname: true}},
+            receiver: {select: {firstName: true, surname: true}}
           }
         })
-
 
         return {userId, transactions}
     }
