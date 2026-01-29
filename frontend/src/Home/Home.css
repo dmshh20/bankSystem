@@ -189,5 +189,26 @@
 }
 
 .recentTransactionsList {
-    
+    margin-left: 20px;
+    margin-top: 25px;
+
+}
+
+.everyTransactionList {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+.transactionInfo {
+    display: flex;
+    gap: 20px;
+}
+
+.transactionType {
+    display: flex;
+}
+.amount-red {
+    color: red;
+}
+.amount-green {
+    color: green;
 }

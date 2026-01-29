@@ -3,12 +3,23 @@ import notification from '../images/Notification.png'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
+interface Transaction {
+    id: number;
+    amount: string; 
+    senderId: number;
+    receiverId: number;
+    currency: string
+    time: string;
+}
+
 const Home = () => {
     const [token, setToken] = useState<string | null>(localStorage.getItem('accessToken'))
     const [decryptedCard, setDecryptedCard] = useState<string>('')
     const [copied, setCopied] = useState(false)
     const [currentSum, setCurrentSum] = useState('')
     const [currentDecimal, setCurrentDecimal] = useState('')
+    const [transaction, setTransaction] = useState<Transaction[]>([]) 
+    const [currentUserId, setCurrentUserId] = useState<number>() 
 
   // mask helper
   const maskCardNumber = (card: string) => {
@@ -55,9 +66,9 @@ const Home = () => {
             Authorization: `Bearer ${token}`
         }
     })
-    const responseBalance = response.data.existingBankAccount.balance; // "1079.5"
+    const responseBalance = response.data.existingBankAccount.balance;
 
-    const formatFullBalance = new Intl.NumberFormat('EU-eu', {
+    const formatFullBalance = new Intl.NumberFormat('eu-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(responseBalance)   
@@ -69,7 +80,7 @@ const Home = () => {
 
 
   const recentTransaction = async () => {
-        const response = await axios.get(import.meta.env.VITE_USER_ME, {
+        const response = await axios.get('http://localhost:3000/auth/recent-transactions',{
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`
@@ -77,12 +88,19 @@ const Home = () => {
     })
 
     
+    const dataTransaction = response.data.transactions
+    setTransaction(dataTransaction)
+    console.log('2',transaction);
+    console.log('',dataTransaction);
+    setCurrentUserId(response.data.userId)
+    
   }
 
 
   useEffect(() => {
     showCardNumber()
     userTotal()
+    recentTransaction()
   }, [])
 
   return (
@@ -121,7 +139,21 @@ const Home = () => {
       <div className='lastOperations'>
         <h1 className='lastOperationsMessage'>Recent transactions</h1>
       <div className='recentTransactionsList'>
-            <p>-</p>
+          {transaction.slice(0, 4).map((th) => {
+            const isOutgoing = currentUserId !== th.receiverId;
+            return (
+              <div className='everyTransactionList' key={th.id}>
+                <div className='transactionInfo'>
+                    <span className='transactionType'>
+                      {isOutgoing ? 'To: ' + th.id : 'From: ' + th.senderId}
+                    </span>
+                    <p className={isOutgoing ? 'amount-red' : 'amount-green'}>
+                      {isOutgoing ? '-' : '+'}{th.amount} {th.currency}
+                    </p>
+                </div>
+              </div>
+            );
+          })}
       </div>
 
       </div>

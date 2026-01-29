@@ -50,4 +50,10 @@ export class AuthController {
     return this.authService.aboutUser(user)
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('recent-transactions')
+  async recentTransations(@GetUser() user: GetUserDto) {
+    return this.authService.recentTransations(user)
+  }
+
 }

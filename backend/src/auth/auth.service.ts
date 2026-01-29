@@ -219,4 +219,27 @@ export class AuthService {
         
         return {existingUser, existingBankAccount}
     }
+
+    async recentTransations(user: GetUserDto) {
+        const userId = user.id
+       const transactions =  await this.prisma.transactionsHistory.findMany({
+          where: {
+            OR: [
+               {
+                receiverId: user.id
+               }, {
+                AND: {
+                    senderId: user.id
+                }
+               }
+              
+            ]
+          }, orderBy: {
+            id: 'desc'
+          }
+        })
+
+
+        return {userId, transactions}
+    }
 }
