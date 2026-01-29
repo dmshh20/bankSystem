@@ -11,6 +11,7 @@ import { verifyViaOtpDto } from './dto/verifyViaOtp.dto';
 import { forgetPasswordEnterOtpDto } from './dto/forgetPasswordEnterOtp.dto';
 import { forgetPasswirdEmailVerifyDto } from './dto/forgetPasswirdEmailVerify.dto';
 import { updatePasswordDto } from './dto/updatePassword.dto';
+import { GetUserDto } from './getUser/dto/getUser.dto';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,7 @@ export class AuthService {
             if (!cardNumber || !cardHash) {
                 throw new InternalServerErrorException('Failed in getting cardNumber or cardHash')
             }
-            
+
             const hash = await bcrypt.hash(body.password, 10)
             const encryptedKeyAndCard = await this.encryptService.encryptionCardNumber(cardNumber)
 
@@ -53,6 +54,14 @@ export class AuthService {
                     password: hash,
                 }
             })
+
+            const createBankAccount = await this.prisma.bankAccount.create({
+                data: {
+                    balance: 0,
+                    userId: createUser.id
+                }
+            })
+            const {balance, ...userBankAccount} = createBankAccount 
             
             const payload = {id: createUser.id}
             const accessToken = this.jwt.sign(payload)
@@ -61,7 +70,8 @@ export class AuthService {
 
             return {
                 access_token: accessToken,
-                user: UserWithoutPassword
+                user: UserWithoutPassword,
+                userBankAccount
             }
         } catch(error) {
             if (error.code === 'P2002') {
@@ -95,6 +105,7 @@ export class AuthService {
             const hashOtpCode = await this.encryptService.hashOtp(generateOtpCode)
             
             await sendEmail(String(generateOtpCode))
+            
             await redis.set(`otp:${findUser.id}`, hashOtpCode, 'EX', 300)
             
             return {
@@ -200,5 +211,37 @@ export class AuthService {
         return {
                 access_token: accessToken
             }
+    }
+
+    async aboutUser(user: GetUserDto) {
+        const existingUser = await this.prisma.user.findUnique({where: {id: user.id}})
+        const existingBankAccount = await this.prisma.bankAccount.findUnique({where: {userId: existingUser?.id}})
+        
+        return {existingUser, existingBankAccount}
+    }
+
+    async recentTransations(user: GetUserDto) {
+        const userId = user.id
+       const transactions =  await this.prisma.transactionsHistory.findMany({
+          where: {
+            OR: [
+               {
+                receiverId: user.id
+               }, {
+                AND: {
+                    senderId: user.id
+                }
+               }
+              
+            ]
+          }, orderBy: {
+            id: 'desc'
+          }, include: {
+            sender: {select: {firstName: true, surname: true}},
+            receiver: {select: {firstName: true, surname: true}}
+          }
+        })
+
+        return {userId, transactions}
     }
 }

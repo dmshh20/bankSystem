@@ -3,10 +3,14 @@ import { createCipheriv, createHash, randomBytes, scrypt } from 'node:crypto';
 import { promisify } from 'node:util';
 import { randomInt } from 'node:crypto';
 import { createDecipheriv } from 'node:crypto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 
 @Injectable()
 export class EncryptService {
+    constructor(
+        private readonly prisma: PrismaService
+    ) {}
     private async getKey() {
             const password = process.env.ENCRYPT_PASSWORD as string
             const salt = process.env.SALT as string
@@ -37,7 +41,6 @@ export class EncryptService {
 
     async generateCardNumber() {
         try {
-
             let cardNumber = '21'
             for (let i = 1; i <= 14; i++) {
                 cardNumber += randomInt(0, 10).toString()
@@ -98,5 +101,24 @@ export class EncryptService {
             throw new InternalServerErrorException('Error in finding BlindIndex')   
         }
     }
+
+    async decryptCard(user: any) {
+        
+        const existingUser = await this.prisma.user.findUnique({
+            where: {
+                id: user.id   
+            }
+        })
+
+        if (!existingUser) {
+            throw new BadRequestException('User not found')
+        }
+
+        const userCard = existingUser.cardEncrypted
+        
+        
+        const fullCard = await this.decryptCardNumber(userCard)
+        return fullCard
+    }   
 
 }

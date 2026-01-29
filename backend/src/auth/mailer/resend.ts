@@ -3,7 +3,6 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_CODE);
 
-
 export async function sendEmail(code: string) {
   const { data, error } = await resend.emails.send({
     from: 'Glorious Bank <onboarding@resend.dev>',
@@ -15,6 +14,4 @@ export async function sendEmail(code: string) {
   if (error) {
     return console.error({ error });
   }
-
-  console.log({ data });
 }

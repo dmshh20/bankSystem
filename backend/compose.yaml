@@ -6,17 +6,17 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 9999
-      POSTGRES_DB: bank
+       - POSTGRES_USER=${DB_USER}
+       - POSTGRES_PASSWORD=${DB_PASSWORD}
+       - POSTGRES_DB=${DB_NAME}
     ports:
-      - 5434:5432 
+     - "5434:5432" 
   redis:
     image: redis:alpine
     ports:
-      - "6379:6379"
+     - "6379:6379"
     volumes:
-      - redis-data:/data
+     - redis-data:/data
 
 volumes:
   redis-data:

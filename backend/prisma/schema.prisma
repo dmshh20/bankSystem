@@ -16,4 +16,37 @@ model User {
   cardEncrypted           String     @unique
   cardHash                String     @unique
   password                String
+  bankAccount             BankAccount[]
+  LoggingHistory          LoggingHistory[]
+  sentTransfers           TransactionsHistory[] @relation("SentTransactions")
+  receivedTransfers       TransactionsHistory[] @relation("ReceivedTransactions")
+}
+
+model BankAccount {
+  id              Int        @id @default(autoincrement())
+  balance         Decimal    @db.Decimal(12,2)   
+  userId          Int       @unique
+  bankAccountId   User      @relation(fields: [userId], references: [id])
+}
+
+model LoggingHistory {
+  id                Int        @id @default(autoincrement())
+  userId            Int        
+  method            String
+  urlPath           String
+  statusCode        String
+  time              DateTime
+  userIdRelations   User      @relation(fields: [userId], references: [id])
+}
+
+model TransactionsHistory {
+  id                Int        @id @default(autoincrement())
+  senderId          Int
+  sender            User       @relation("SentTransactions", fields: [senderId], references: [id])
+  receiverId        Int
+  receiver          User     @relation("ReceivedTransactions", fields: [receiverId], references: [id])
+  amount            Decimal   @db.Decimal(12,2)
+  currency          String
+  status            Boolean
+  time              DateTime  @default(now())
 }
