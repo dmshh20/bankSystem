@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, UseInterceptors } from '@nestjs/common';
 import { TransferService } from './transfer.service';
 import { transferFundsDto } from './dto/transferFunds.dto';
 import { GetUser } from 'src/auth/getUser/getUser';
@@ -16,4 +16,10 @@ export class TransferController {
   async transferFunds(@Body() body: transferFundsDto, @GetUser() user: GetUserDto) {
     return this.transferService.transferFunds(body, user)
   }
+
+  @Get('lastrecords')
+  async getLastRecords(@GetUser() user: GetUserDto) {
+    return this.transferService.getLastRecords(user)
+  }
+  
 }

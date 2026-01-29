@@ -11,6 +11,7 @@ import { verifyViaOtpDto } from './dto/verifyViaOtp.dto';
 import { forgetPasswordEnterOtpDto } from './dto/forgetPasswordEnterOtp.dto';
 import { forgetPasswirdEmailVerifyDto } from './dto/forgetPasswirdEmailVerify.dto';
 import { updatePasswordDto } from './dto/updatePassword.dto';
+import { GetUserDto } from './getUser/dto/getUser.dto';
 
 @Injectable()
 export class AuthService {
@@ -104,7 +105,6 @@ export class AuthService {
             const hashOtpCode = await this.encryptService.hashOtp(generateOtpCode)
             
             await sendEmail(String(generateOtpCode))
-            console.log('sendd');
             
             await redis.set(`otp:${findUser.id}`, hashOtpCode, 'EX', 300)
             
@@ -211,5 +211,12 @@ export class AuthService {
         return {
                 access_token: accessToken
             }
+    }
+
+    async aboutUser(user: GetUserDto) {
+        const existingUser = await this.prisma.user.findUnique({where: {id: user.id}})
+        const existingBankAccount = await this.prisma.bankAccount.findUnique({where: {userId: existingUser?.id}})
+        
+        return {existingUser, existingBankAccount}
     }
 }

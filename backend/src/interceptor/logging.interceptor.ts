@@ -22,15 +22,13 @@ export class LoggingInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
-        concatMap( async () => {
+          tap({next: async () => {
             const statusCode = response.statusCode
             const now = new Date(Date.now())
 
-
             await this.transactionsLogging(userId, statusCode, url, method, now)
           this.logger.log(`${request.method} ${request.url} StatusCode: ${request.res.statusCode}, userId: ${request.user.id}, in ${now}`)
-          
-        })
+          }})
       );
     }
 

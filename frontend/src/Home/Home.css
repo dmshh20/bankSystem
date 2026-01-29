@@ -164,3 +164,30 @@
     position: absolute;
     margin-top: 10px;
 }
+
+.decryptedCard {
+    font-size: 25px;
+    color: white;
+    /* margin-top: 10px; */
+}
+.fa-copy {
+    font-size: 25px;
+    color: white;
+    cursor: pointer;
+}
+.fa-copy-hidden {
+    visibility: hidden;
+}
+.decimalNumber {
+    font-size: 15px;
+    margin-top: 3px;
+    font-weight: 500;
+    margin-right: 10px;
+}
+.totalFinaceCount {
+    display: flex;
+}
+
+.recentTransactionsList {
+    
+}

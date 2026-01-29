@@ -5,6 +5,8 @@ import { EncryptService } from 'src/encrypt/encrypt.service';
 import { GetUserDto } from 'src/auth/getUser/dto/getUser.dto';
 import { transferDto } from './dto/recipient.dto';
 import { Prisma } from 'generated/prisma/client';
+import { executeTransactionRecord } from 'src/lib/executeTransactionRecord';
+import { Decimal } from '@prisma/client/runtime/index-browser';
 
 @Injectable()
 export class TransferService {
@@ -15,10 +17,10 @@ export class TransferService {
         private readonly encryptService: EncryptService,
     ){}
 
-    async transferFunds(body: transferFundsDto, user: any) {
+    async transferFunds(body: transferFundsDto, user: GetUserDto) {
         const userTransfer = body.fullCardNumber
-        const funds = Number(body.amount)
-
+        const funds = new Decimal(body.amount).toDecimalPlaces(2)
+        
         const recipient = await this.findRecipient(userTransfer, user)
         
          this.logger.log('Making transfer...')
@@ -29,6 +31,8 @@ export class TransferService {
         })
         
     }
+
+   
 
     private async findRecipient(recipientCard: string, user: GetUserDto) {
         const hashUserTransfer = await this.encryptService.createBlindIndex(recipientCard)
@@ -46,7 +50,7 @@ export class TransferService {
         return {sender, recipient}
     }
 
-    private async userBalanceValidate(t: Prisma.TransactionClient, recipient: transferDto, amount: number) {
+    private async userBalanceValidate(t: Prisma.TransactionClient, recipient: transferDto, amount: Decimal) {
 
          const userSenderBalance = await t.bankAccount.findUnique({
                     where: {userId: recipient.sender.id}
@@ -55,13 +59,13 @@ export class TransferService {
                 throw new BadRequestException('Balance not found')
             }
 
-            if (userSenderBalance?.balance < amount) {
+            if (userSenderBalance.balance.lt(amount)) {
                 throw new BadRequestException('Insufficient funds')
             }
     }
 
-    private async transferLogic(t: Prisma.TransactionClient, user: GetUserDto, amount: number, recipient: transferDto) {
-        const withdrawFromSender = await t.bankAccount.update({
+    private async transferLogic(t: Prisma.TransactionClient, user: GetUserDto, amount: Decimal, recipient: transferDto) {
+         await t.bankAccount.update({
                 where: {
                     userId: user.id
                 }, data: {
@@ -71,7 +75,7 @@ export class TransferService {
                 }
             })
     
-            const incrementUserBalance =  await t.bankAccount.update({
+            await t.bankAccount.update({
                 where: {
                     userId: recipient.recipient.id
                 },
@@ -81,6 +85,22 @@ export class TransferService {
                     },
                 }
             })
-            return {incrementUserBalance, withdrawFromSender}        
+                
+            return await executeTransactionRecord(t, user.id, recipient ,amount, true)
     }
+
+    async getLastRecords(user: GetUserDto) {
+        const records = await this.prisma.transactionsHistory.findMany({
+            where: {
+                senderId: user.id
+            },
+            take: 10,
+            orderBy: {
+               id: 'desc'
+            }
+
+        })
+        return records
+    }
+   
 }

@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 
 const Header = () => {
-  const [amount, setAmount] = useState('')
+  const [amount, setAmount] = useState<number | string>('')
   const [token, setToken] = useState<string | null>(localStorage.getItem('accessToken'))
   const [cardNumbers, setCardNumbers] = useState<string[]>(['', '', '', ''])
   const [isDashBoard, setIsDashBoard] = useState(false)
@@ -74,7 +74,8 @@ const Header = () => {
       return
     }
 
-    if (!amount || Number(amount) <= 0) {
+    const numericAmount = parseFloat(amount as string)
+    if (Number.isNaN(numericAmount) || numericAmount <= 0) {
       alert('Enter valid amount')
       return
     }
@@ -91,8 +92,6 @@ const Header = () => {
       amount
     }
     
-    console.log('check token', token);
-    
     if (!token) {
       throw new Error('token is invalid')
     }
@@ -102,8 +101,7 @@ const Header = () => {
         Authorization: `Bearer ${token}` 
       }
     })
-
-    console.log(response.data);
+    
     return response.data
   }
 

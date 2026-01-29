@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/SignUp.dto';
 import { SignInDto } from './dto/SignIn.dto';
@@ -6,6 +6,9 @@ import { verifyViaOtpDto } from './dto/verifyViaOtp.dto';
 import { forgetPasswordEnterOtpDto } from './dto/forgetPasswordEnterOtp.dto';
 import { forgetPasswirdEmailVerifyDto } from './dto/forgetPasswirdEmailVerify.dto';
 import { updatePasswordDto } from './dto/updatePassword.dto';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { GetUser } from './getUser/getUser';
+import { GetUserDto } from './getUser/dto/getUser.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -39,6 +42,12 @@ export class AuthController {
   @Post('update-password')
   async updatePassword(@Body() body: updatePasswordDto) {
     return this.authService.updatePassword(body)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async aboutUser(@GetUser() user: GetUserDto) {
+    return this.authService.aboutUser(user)
   }
 
 }

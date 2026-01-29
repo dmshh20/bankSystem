@@ -5,7 +5,7 @@ import DashBoard from "../Dashboard/DashBoard"
 interface ExchangeCurrencyType {
     open: boolean
     isClose: () => void
-    children: ReactNode
+    children?: ReactNode
 }
 
 const ExchangeCurrency = ({open, isClose, children}: ExchangeCurrencyType) => {
